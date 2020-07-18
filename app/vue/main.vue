@@ -4,7 +4,7 @@
 	admin
 </template>
 <script>
-	import admin from "./admin.vue"
+	import admin from "./admin/admin.vue"
 	export default {
 		data(){
 			return {

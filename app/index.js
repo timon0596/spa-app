@@ -10,28 +10,27 @@ import './test2.sass'
 import {mapActions,mapGetters,mapMutations} from "vuex"
 Vue.use(Vuex)
 const store = new Vuex.Store({
-  state: {
-  	teachers: [],
-  	subjects: []
-  },
+  state: () => ({
+      lecturers: {}
+  }),
   mutations: {
-  	teachers_initial(state,teachers){
-  		state.teachers=teachers
-  	},
-  	subjects_initial(state,teachers){
-  		state.subjects=teachers
+  	lecturers_initial(state,lecturers){
+  		state.lecturers=lecturers
   	},
   },
   actions: {
-  	
+  	fetch_lecturers ({ commit }, id) {
+            // return the Promise via `store.dispatch()` so that we know
+            // when the data has been fetched
+            return axios.get('/lecturers').then(res => {
+              commit('lecturers_initial', res.data)
+            })
+          }
   },
   getters: {
-  	teachers(state){
-  		return state.teachers
+  	get_lecturers(state){
+  		return state.lecturers
   	},
-  	subjects(state){
-  		return state.subjects
-  	}
   }	
 })
 
@@ -40,14 +39,12 @@ new Vue({
 	render: h=>h(main),
 	store,
 	methods:{
-		...mapMutations(['teachers_initial','subjects_initial']),
+		...mapMutations(['lecturers_initial']),
+    ...mapActions(['fetch_lecturers']),
+    ...mapGetters(['get_lecturers']),
 	},
-	mounted(){
-		axios.get('/teachers').then((d)=>{
-			this.teachers_initial(d.data)
-		})
-		axios.get('/subjects').then((d)=>{
-			this.subjects_initial(d.data)
-		})
+	async mounted(){
+		await this.fetch_lecturers()
+
 	}
 })
